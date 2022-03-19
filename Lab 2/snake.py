@@ -193,9 +193,12 @@ while True:
         # Hint: refer to the example at Serial-RW/pyserial-test.py
         
         #used to make the buzzer beep when we eat the apple
-        #sends the characters 'H' and 'L' to our Arduino Script
+        #using a single flag "H" should be enough, originally i had two flags
+        #but the less flags the better
+        #Ryan's Idea
+        
         ser.write(bytes('H', 'utf-8'))
-        ser.write(bytes('L', 'utf-8'))
+        #ser.write(bytes('L', 'utf-8'))
         
         # Move the food to a random spot
         x = random.randint(-290, 290)

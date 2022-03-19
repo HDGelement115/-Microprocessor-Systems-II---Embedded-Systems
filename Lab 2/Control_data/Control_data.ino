@@ -65,18 +65,17 @@ void loop(){
   Serial.print("X = "); Serial.print(GyX);
   Serial.print(" | Y = "); Serial.print(GyY);
   Serial.print(" | Z = "); Serial.println(GyZ);
-  
+
+  //using a single flag to turn the buzzer on and off in the same go
+  //~Ryans idea
   if (Serial.available() > 0) {
     // read the oldest byte in the serial buffer:
     eaton = Serial.read();
     // if it's a capital H (ASCII 72), turn on the Buzzer;
     if (eaton == 'H') {
-      digitalWrite(buzzer, HIGH);
+      tone(buzzer, 1000,500);
     }
-    // if it's an L (ASCII 76) turn off the Buzzer:
-    if (eaton == 'L') {
-      digitalWrite(buzzer, LOW);
-    }
+
   }
   delay(500);
 }
