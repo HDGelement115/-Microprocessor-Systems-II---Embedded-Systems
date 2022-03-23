@@ -18,6 +18,7 @@ import numpy as np
 # TODO uncomment the following two lines to initialize serial port
 ser=serial.Serial(port='COM3', baudrate = 250000, timeout=.1)
 
+tmp = 0
 delay = 0.1
 temp = -1
 
@@ -136,9 +137,9 @@ while True:
         else:
             print("no value \n")
         #prints joystick data
-        #print("Joystick: ")
-        #print(data)
-        #print("==================")
+        print("Joystick: ")
+        print(data)
+        print("==================")
     
     
     #given the data from the MPU6050 chooses direction to go
@@ -151,6 +152,12 @@ while True:
             head.direction = "down"
         elif data[0] == 8:
             head.direction = "up"
+    #to stop the gyro sensor from printing the same value again while tilting
+        if tmp != data[0]:
+            print("MPU6050: ")
+            print(data)
+            print("==================")
+        tmp = data[0];
     
     # Check for a collision with the border
     if head.xcor()>290 or head.xcor()<-290 or head.ycor()>290 or head.ycor()<-290:
