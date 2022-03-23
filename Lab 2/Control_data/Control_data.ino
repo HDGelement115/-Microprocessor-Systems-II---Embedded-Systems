@@ -63,13 +63,13 @@ void loop(){
 
   // Accelerometer data used for tilt detection. Ranges are defined based on MPU6050 raw data when used
   if (AcX < 2000 && AcY > 1000)
-    Serial.println("MPU: 4"); //Down
+    Serial.println("MPU: 2"); //Down
   else if (AcX < 2000 && AcY < -1000) 
-    Serial .println("MPU: 1"); //Up
+    Serial .println("MPU: 8"); //Up
   else if (AcX < -1000 && AcY > -1000) 
-    Serial .println("MPU: 2"); //right
+    Serial .println("MPU: 6"); //right
   else if (AcX > 2000 && AcY > -1000) 
-    Serial .println("MPU: 3"); //left
+    Serial .println("MPU: 4"); //left
 /*
   //Serial.print("Tempature: ");
   //Serial.println(Tmp/340.00+36.53);
