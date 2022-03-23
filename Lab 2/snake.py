@@ -143,13 +143,13 @@ while True:
     
     #given the data from the MPU6050 chooses direction to go
     if line.find("MPU") != -1:
-        if data[0] ==  2:
+        if data[0] ==  6:
             head.direction = "right"
-        elif data[0] == 3:
-            head.direction = "left"
         elif data[0] == 4:
+            head.direction = "left"
+        elif data[0] == 2:
             head.direction = "down"
-        elif data[0] == 1:
+        elif data[0] == 8:
             head.direction = "up"
     
     # Check for a collision with the border
