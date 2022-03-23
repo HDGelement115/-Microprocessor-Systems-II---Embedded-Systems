@@ -8,22 +8,18 @@
 import turtle
 import time
 import random
-import serial 
+# TODO uncomment the following line to use pyserial package
+import serial
 import re
 import numpy as np
-# TODO uncomment the following line to use pyserial package
-#import serial
 
 # Note the serial port dev file name
 # need to change based on the particular host machine
 # TODO uncomment the following two lines to initialize serial port
-#serialDevFile = '/dev/cu.usbmodem14201'
-#ser=serial.Serial(serialDevFile, 9600, timeout=0)
-
-#change the COM and baudrate to the ones you set and have in the arduino IDE
-ser = serial.Serial(port='COM5', baudrate=250000, timeout=.1)
+ser=serial.Serial(port='COM3', baudrate = 250000, timeout=.1)
 
 delay = 0.1
+temp = -1
 
 # Score
 score = 0
@@ -110,7 +106,7 @@ wn.onkey(go_right, "d")
 # Main game loop
 while True:
     wn.update()
-    
+
     # TODO: notes by Prof. Luo
     # you need to add your code to read control information from serial port
     # then use that information to set head.direction
@@ -121,47 +117,41 @@ while True:
     #     head.direction = "down"
     # elif ......
     #
+    
     line = ser.readline().decode('ascii')           #puts a single line into the variable line
     data = np.array(re.findall('[-+]?\d+', line))   #finds the numbers in a single line and puts them into an array named data
     data = [int(i) for i in data]                   #turns the strings of numbers into integers
-
-    x = 100    # sensitivity for joystick
-    glr = 1500 # left right sensitivity on the Gyroscope
-    gud = 3000 # up down sensitivity on the Gyroscope
+    
     
     #given the data from the joystick chooses direction to go
-    if not line.find("Joystick"):
-        if len(data) == 3 and data[0] > x and data[0] <= 512:
+    if line.find("Joystick") != -1:
+        if data[0] > 1:
             head.direction = "right"
-        elif len(data) == 3 and data[0] < -x and data[0] >= -512:
+        elif data[0] < -1:
             head.direction = "left"
-        if len(data) == 3 and data[1] > x and data[1] <= 512:
-            head.direction = "up"
-        elif len(data) == 3 and data[1] < -x and data[1] >= -512:
+        elif data[1] > 1:
             head.direction = "down"
-            
+        elif data[1] < -1:
+            head.direction = "up"
+        else:
+            print("no value \n")
         #prints joystick data
-        print("Joystick: ")
-        print(data)
-        print("==================")
-            
-    #given the data from the gyrocope chooses direction to go
-    if not line.find("Gyroscope"):
-        if len(data) == 3 and data[1] > glr and data[1] <= 32768:
+        #print("Joystick: ")
+        #print(data)
+        #print("==================")
+    
+    
+    #given the data from the MPU6050 chooses direction to go
+    if line.find("MPU") != -1:
+        if data[0] ==  2:
             head.direction = "right"
-        elif len(data) == 3 and data[1] < -glr and data[1] >= -32768:
+        elif data[0] == 3:
             head.direction = "left"
-        if len(data) == 3 and data[0] > gud and data[0] <= 32768:
+        elif data[0] == 4:
             head.direction = "down"
-        elif len(data) == 3 and data[0] < -gud and data[0] >= -32768:
+        elif data[0] == 1:
             head.direction = "up"
-            
-        #prints Gyroscope data
-        print("Gyroscope: ")
-        print(data)
-        print("==================")
-            
-
+    
     # Check for a collision with the border
     if head.xcor()>290 or head.xcor()<-290 or head.ycor()>290 or head.ycor()<-290:
         time.sleep(1)
@@ -187,11 +177,12 @@ while True:
 
     # Check for a collision with the food
     if head.distance(food) < 20:
+
         # TODO: notes by Prof. Luo
         # you need to send a flag to Arduino indicating an apple is eaten
         # so that the Arduino will beep the buzzer
         # Hint: refer to the example at Serial-RW/pyserial-test.py
-        
+
         #used to make the buzzer beep when we eat the apple
         #using a single flag "H" should be enough, originally i had two flags
         #but the less flags the better
@@ -199,7 +190,7 @@ while True:
         
         ser.write(bytes('H', 'utf-8'))
         #ser.write(bytes('L', 'utf-8'))
-        
+
         # Move the food to a random spot
         x = random.randint(-290, 290)
         y = random.randint(-290, 290)
